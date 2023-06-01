@@ -5,11 +5,10 @@ import threading
 import socket
 import json
 import requests
-
 import tornado
 
 
-class login_data():
+class LoginData:
     login_data = {
         "method": "login",
         "token": "NTkxMDAwMC01OTIwMDAwLHNscw=="
@@ -55,7 +54,7 @@ class TCPConnection:
                 self.connection.connect((self.host, self.port))
                 self.connection.settimeout(0.1)  # 设置超时时间为0.1秒
                 # 发送hello消息
-                data = json.dumps(login_data.login_data).encode()
+                data = json.dumps(LoginData.login_data).encode()
                 self.send(data)
                 response = self.receive(1024*20)
                 # to do 漏洞：需要对回复解析，才能确定connection能否正常建立
