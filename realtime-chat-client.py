@@ -143,23 +143,29 @@ class WebClient:
         datagram, client_address = udp_sock.recvfrom(4096)
         print('receive datagram from %s', client_address)
         # ts = time.time()
-        data = json.load(datagram)
+        # print(datagram)
+        # print(datagram.decode('utf-8'))
+        data = json.loads(datagram)
+        # print(data)
         response = {}
 
         try:
-            if data['requesttype'] == 'get':
+            if data['request_type'] == 'get':
                 response = self.get(data['url'])
             elif data['request_type'] == 'post':
+                print(type(data['request_data']))
+                print(data['url'])
                 response = self.post(data['url'], data['request_data'])
             else:
                 print('无效的data request_type: {0}'.format(data['request_type']))
         except Exception as e:
             print(e)
+            print('send response to {0}\n response: {1}'.format(Config.download_proxy_addr, response))
 
+        response = json.dumps(response).encode('utf-8')
         self.tcpconn.send_and_rec(response)
-        print('send response to {0}\n response: {1}'.format(Config.download_proxy_addr, response))
 
-    def post(url_post: str, post_data: json) -> json:
+    def post(self, url_post: str, post_data: dict) -> dict:
         # to do
         data = {}
         response_post = requests.post(
@@ -170,7 +176,7 @@ class WebClient:
         print(obj)
         return obj
 
-    def get(url_get: str) -> json:
+    def get(self, url_get: str) -> dict:
         # to do
         response_get = requests.get(
             url=url_get, params=None, headers=Config.headers)
