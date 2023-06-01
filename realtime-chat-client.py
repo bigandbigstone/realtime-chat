@@ -143,7 +143,7 @@ class WebClient:
         datagram, client_address = udp_sock.recvfrom(4096)
         print('receive datagram from %s', client_address)
         # ts = time.time()
-        # print(datagram)
+        print(datagram)
         # print(datagram.decode('utf-8'))
         data = json.loads(datagram)
         # print(data)
@@ -153,8 +153,8 @@ class WebClient:
             if data['request_type'] == 'get':
                 response = self.get(data['url'])
             elif data['request_type'] == 'post':
-                print(type(data['request_data']))
-                print(data['url'])
+                # print(type(data['request_data']))
+                # print(data['url'])
                 response = self.post(data['url'], data['request_data'])
             else:
                 print('无效的data request_type: {0}'.format(data['request_type']))
