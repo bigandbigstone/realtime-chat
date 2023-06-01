@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/dustin/go-broadcast"
-)
+import "github.com/dustin/go-broadcast"
 
 type Message struct {
 	UserId string
@@ -22,7 +20,8 @@ type Manager struct {
 	delete       chan string
 	messages     chan *Message
 	// messagecache 不设置限制，需要用户注意使用
-	messagecache map[string][]string
+	// messagecache map[string][]string
+	Messagecache map[string]string
 }
 
 func NewRoomManager() *Manager {
@@ -33,7 +32,8 @@ func NewRoomManager() *Manager {
 		delete:       make(chan string, 100),
 		messages:     make(chan *Message, 100),
 		// messagecache 不设置限制，需要用户注意使用
-		messagecache: make(map[string][]string),
+		// messagecache: make(map[string][]string),
+		Messagecache: make(map[string]string),
 	}
 
 	go manager.run()
@@ -51,10 +51,24 @@ func (m *Manager) run() {
 			m.deleteBroadcast(roomid)
 		case message := <-m.messages:
 			// 将消息缓存入为messagecache
-			m.messagecache[message.RoomId] = append(m.messagecache[message.RoomId], message.UserId+": "+message.Text)
+			// m.messagecache[message.RoomId] = append(m.messagecache[message.RoomId], message.UserId+": "+message.Text)
+			m.Messagecache[message.RoomId] += message.UserId + ": " + message.Text + "\n"
 			m.room(message.RoomId).Submit(message.UserId + ": " + message.Text)
 		}
 	}
+}
+
+func (m *Manager) GetMessageCache(roomid string) string {
+	strMsg, ok := m.Messagecache[roomid]
+	if ok {
+		return strMsg
+	}
+	return ""
+}
+
+func (m *Manager) DelMessageCache(roomid string) {
+	// 什么傻逼写法
+	m.Messagecache[roomid] = ""
 }
 
 func (m *Manager) register(listener *Listener) {
