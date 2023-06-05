@@ -8,11 +8,11 @@ import requests
 import tornado
 
 
-class LoginData:
-    login_data = {
-        "method": "login",
-        "token": "NTkxMDAwMC01OTIwMDAwLHNscw=="
-    }
+# class LoginData:
+#     login_data = {
+#         "method": "login",
+#         "token": "NTkxMDAwMC01OTIwMDAwLHNscw=="
+#     }
 
 
 class Config:
